@@ -1,0 +1,124 @@
+# Document Chatbot
+
+This project implements a document analysis chatbot as described in Task-01. It allows users to upload one or more files (PDF, TXT, DOCX, HTML), provide a task description, and then ask questions related to the task and the content of the uploaded files. The chatbot uses Google's Qwen (specifically `gemini-1.5-flash`) via LangChain to process the information and generate answers.
+
+## Features
+
+*   Accepts user-defined task prompts.
+*   Uploads and processes multiple files (PDF, TXT, DOCX, HTML).
+*   Extracts text content from various file types.
+*   Chunks large documents for efficient processing.
+*   Uses Google Qwen embeddings for content indexing (via FAISS).
+*   Performs retrieval-augmented generation (RAG) for context-aware chat responses.
+*   Maintains chat history for contextual follow-up questions.
+*   Provides a simple Gradio web interface for interaction.
+*   Also exposes FastAPI endpoints for programmatic access.
+
+## Tech Stack
+
+*   **Language:** Python
+*   **Backend Framework:** FastAPI
+*   **LLM Integration:** LangChain
+*   **LLM:** Google Qwen (`gemini-1.5-flash`) via `langchain-google-genai`
+*   **Embeddings:** Google Qwen Embeddings (`models/embedding-001`) via `langchain-google-genai`
+*   **Vector Store:** FAISS (`faiss-cpu`)
+*   **UI (Testing):** Gradio
+*   **File Handling:** `pypdf`, `python-docx`, `beautifulsoup4`
+
+## Prerequisites
+
+1.  **Python:** Python 3.8 or later installed.
+2.  **Git:** Git installed on your system.
+3.  **Virtual Environment (Recommended):** Using `venv` or `conda`.
+4.  **Google AI API Key:** A valid API key from Google AI Studio (Gemini) with access to `gemini-1.5-flash` and `models/embedding-001`.
+
+## Setup Instructions
+
+1.  **Clone or Download the Repository:**
+    Clone this repository or download the source code.
+
+2.  **Navigate to the Project Directory:**
+    Open your terminal or command prompt and navigate to the project folder.
+    ```bash
+    cd path/to/chatbot_project
+    ```
+
+3.  **Create a Virtual Environment (Recommended):**
+    ```bash
+    python -m venv venv
+    # Activate it:
+    # On Windows:
+    venv\Scripts\activate
+    # On macOS/Linux:
+    source venv/bin/activate
+    ```
+
+4.  **Install Dependencies:**
+    Ensure you have `pip` updated, then install the required packages.
+    ```bash
+    pip install --upgrade pip
+    pip install -r requirements.txt
+    ```
+    *(If `requirements.txt` is not present, create it with the packages listed below or install them directly).*
+
+5.  **Set Environment Variables:**
+    Create a `.env` file in the root project directory and add your Google AI API key:
+    ```env
+    GOOGLE_API_KEY=your_actual_google_ai_api_key_here
+    ```
+    *Replace `your_actual_google_ai_api_key_here` with your real API key.*
+
+6.  **Ensure Required Files are Present:**
+    Make sure the following files exist in your project directory:
+    *   `main.py` (Main application file)
+    *   `extractors.py` (File content extraction logic)
+    *   `.env` (With your API key)
+    *   `requirements.txt` (Listing dependencies)
+    *   `.gitignore` (Listing files/folders to ignore, e.g., `__pycache__`, `*.env`, `uploaded_files`, `chatbot_env`)
+
+## Running the Application
+
+1.  **Activate the Virtual Environment (if not already active):**
+    ```bash
+    # On Windows:
+    venv\Scripts\activate
+    # On macOS/Linux:
+    source venv/bin/activate
+    ```
+
+2.  **Run the Gradio Interface (for testing):**
+    This launches the web UI.
+    ```bash
+    python main.py
+    ```
+    Access the application in your browser via the URL provided in the terminal (usually `http://localhost:7860`).
+
+3.  **Run the FastAPI Backend (API only):**
+    This starts the API server.
+    ```bash
+    uvicorn main:app --reload
+    ```
+    Access the API documentation at `http://localhost:8000/docs`.
+
+## Usage
+
+1.  **Via Gradio UI:**
+    *   Enter your task prompt (e.g., "Summarize the key points").
+    *   Upload one or more supported files.
+    *   Click "Process Files".
+    *   Once processed, ask questions in the chat section related to your task and the documents.
+
+2.  **Via FastAPI Endpoints:**
+    *   **Upload:** `POST /upload/` with `task` (form data) and `files` (multipart/form-data). Receive a `session_id`.
+    *   **Chat:** `POST /chat/` with JSON `{"session_id": "...", "message": "Your question"}`.
+
+## Project Structure
+chatbot_project/
+│
+├── main.py # FastAPI application & Gradio UI
+├── extractors.py # File content extraction functions
+├── requirements.txt # Python dependencies
+├── .env # Environment variables (API keys - NOT COMMITTED)
+├── .gitignore # Git ignore rules
+├── README.md # This file
+└── uploaded_files/ # Temporary directory for uploaded files (created at runtime)

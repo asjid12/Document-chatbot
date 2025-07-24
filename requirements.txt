@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+python-multipart
+langchain
+langchain-openai
+pypdf
+python-docx
+beautifulsoup4
+langchain-community
+faiss-cpu
+gradio
+python-dotenv
